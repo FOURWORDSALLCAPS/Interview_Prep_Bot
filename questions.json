@@ -1,0 +1,59 @@
+{
+  "Python": [
+    {
+      "id": 1,
+      "text": "Какой тег используется для создания ссылки?",
+      "hasOptions": true,
+      "options": [
+        { "id": 1, "text": "<link>", "isCorrect": false },
+        { "id": 2, "text": "<a>", "isCorrect": true },
+        { "id": 3, "text": "<href>", "isCorrect": false },
+        { "id": 4, "text": "<anchor>", "isCorrect": false }
+      ]
+    },
+    {
+      "id": 2,
+      "text": "Что такое HTML?",
+      "hasOptions": false,
+      "answer": "HTML (HyperText Markup Language) - это стандартизированный язык разметки, который используется для создания и разработки веб-страниц. Это система для разметки отдельных частей веб-страницы с использованием тегов, заключенных в угловые скобки."
+    }
+  ],
+  "Django": [
+    {
+      "id": 1,
+      "text": "В чем разница между «сбросом» и «нормализацией» CSS? Что бы вы выбрали и почему?",
+      "hasOptions": false,
+      "answer": "Сброс (reset) сбрасывает все встроенные в браузер стили элементов. Normalize приводит стили к единому виду во всех браузерах. Лучше использовать Normalize из-за кроссбраузерности."
+    },
+    {
+      "id": 2,
+      "text": "Какое свойство используется для установки цвета фона?",
+      "hasOptions": true,
+      "options": [
+        { "id": 1, "text": "color", "isCorrect": false },
+        { "id": 2, "text": "background-color", "isCorrect": true },
+        { "id": 3, "text": "bgcolor", "isCorrect": false },
+        { "id": 4, "text": "background", "isCorrect": false }
+      ]
+    }
+  ],
+  "General": [
+    {
+      "id": 1,
+      "text": "Что такое чистая функция?",
+      "hasOptions": false,
+      "answer": "Это функция, которая возвращает одинаковый результат, когда вызывается с одним и тем же набором аргументов, а также не имеет побочных эффектов (side effects)"
+    },
+    {
+      "id": 2,
+      "text": "Какой метод используется для добавления элемента в массив?",
+      "hasOptions": true,
+      "options": [
+        { "id": 1, "text": "splice()", "isCorrect": false },
+        { "id": 2, "text": "pop()", "isCorrect": false },
+        { "id": 3, "text": "shift()", "isCorrect": false },
+        { "id": 4, "text": "push()", "isCorrect": true }
+      ]
+    }
+  ]
+}
