@@ -5,6 +5,7 @@ from telegram import (
     ReplyKeyboardMarkup,
     InlineKeyboardButton,
     InlineKeyboardMarkup,
+    ParseMode,
 )
 from telegram.ext import (
     Updater,
@@ -53,8 +54,9 @@ def ask_new_question(update: Update, context: CallbackContext) -> None:
             InlineKeyboardButton(text="Узнать ответ", callback_data=str('ANSWER')),
         ],
     ]
-    question, answer = get_random_question_and_answer(topic=selected_topic)
+    question, answer, example = get_random_question_and_answer(topic=selected_topic)
     context.user_data['selected_answer'] = answer
+    context.user_data['selected_example'] = example
     keyboard = InlineKeyboardMarkup(buttons)
     context.bot.send_message(chat_id=update.message.chat_id, text=question, reply_markup=keyboard)
 
@@ -62,8 +64,9 @@ def ask_new_question(update: Update, context: CallbackContext) -> None:
 def ask_random_question(update: Update, context: CallbackContext) -> str:
     topic = ["Python", "Django", "General"]
     selected_topic = random.choice(topic)
-    question, answer = get_random_question_and_answer(topic=selected_topic)
+    question, answer, example = get_random_question_and_answer(topic=selected_topic)
     context.user_data['selected_answer'] = answer
+    context.user_data['selected_example'] = example
     buttons = [
         [
             InlineKeyboardButton(text="Узнать ответ", callback_data=str('ANSWER')),
@@ -77,7 +80,10 @@ def ask_random_question(update: Update, context: CallbackContext) -> str:
 
 def send_answer(update: Update, context: CallbackContext) -> str:
     answer = context.user_data.get('selected_answer')
+    example = context.user_data.get('selected_example')
     context.bot.send_message(chat_id=update.effective_chat.id, text=answer)
+    if example != 'False':
+        context.bot.send_message(chat_id=update.effective_chat.id, text=f'<code>{example}</code>', parse_mode=ParseMode.HTML)
 
     return 'SELECTING_ACTION'
 

@@ -23,26 +23,49 @@ pip install -r requirements.txt
     {
       "id": 1,
       "text": "Какой-то вопрос по Python",
-      "answer": "Ответ на вопрос по Python"
+      "answer": "Ответ на вопрос по Python",
+      "example": "def some_function(*args):"
+    },
+    {
+      "id": 2,
+      "text": "Какой-то вопрос по Python",
+      "answer": "Ответ на вопрос по Python",
+      "example": "False"
     }
   ],
   "Django": [
     {
       "id": 1,
       "text": "Какой-то вопрос по Django",
-      "answer": "Ответ на вопрос по Django"
+      "answer": "Ответ на вопрос по Django",
+      "example": "def some_function(*args):"
+    },
+    {
+      "id": 2,
+      "text": "Какой-то вопрос по Python",
+      "answer": "Ответ на вопрос по Python",
+      "example": "False"
     }
   ],
   "General": [
     {
       "id": 1,
       "text": "Какой-то общий вопрос",
-      "answer": "Ответ на общий вопрос"
+      "answer": "Ответ на общий вопрос",
+      "example": "def some_function(*args):"
+    },
+    {
+      "id": 2,
+      "text": "Какой-то вопрос по Python",
+      "answer": "Ответ на вопрос по Python",
+      "example": "False"
     }
   ]
 }
 ```
 - Для каждого раздела (например, "Python"), добавьте новые объекты в массив, представляя вопрос и соответствующий ему ответ. Убедитесь, что каждый объект имеет уникальный id.
+
+- Добавьте пример кода в массив, если такой имеется! Иначе оставьте ```"example": "False"```
 
 - Сохраните изменения в файле questions.json.
 
