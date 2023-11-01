@@ -17,7 +17,7 @@ from telegram.ext import (
 )
 from environs import Env
 from textwrap import dedent
-from utils import get_random_question
+from utils import get_random_question_and_answer
 
 
 def start(update: Update, context: CallbackContext) -> str:
@@ -46,11 +46,19 @@ def select_topic(update: Update, context: CallbackContext) -> str:
     return 'SELECTING_ACTION'
 
 
-def ask_new_question(update: Update, context: CallbackContext):
+def ask_new_question(update: Update, context: CallbackContext) -> None:
     selected_topic = context.user_data.get('selected_topic')
-    if selected_topic:
-        question = get_random_question(topic=selected_topic)
-        context.bot.send_message(chat_id=update.message.chat_id, text=question)
+    buttons = [
+        [
+            InlineKeyboardButton(text="Узнать ответ", callback_data=str('ANSWER')),
+        ],
+    ]
+    question, answer = get_random_question_and_answer(topic=selected_topic)
+    context.user_data['selected_answer'] = answer
+    keyboard = InlineKeyboardMarkup(buttons)
+    context.bot.send_message(chat_id=update.message.chat_id, text=question, reply_markup=keyboard)
+
+
 def ask_random_question(update: Update, context: CallbackContext) -> str:
     topic = ["Python", "Django", "General"]
     selected_topic = random.choice(topic)
@@ -63,6 +71,13 @@ def ask_random_question(update: Update, context: CallbackContext) -> str:
     ]
     keyboard = InlineKeyboardMarkup(buttons)
     context.bot.send_message(chat_id=update.message.chat_id, text=question, reply_markup=keyboard)
+
+    return 'SELECTING_ACTION'
+
+
+def send_answer(update: Update, context: CallbackContext) -> str:
+    answer = context.user_data.get('selected_answer')
+    context.bot.send_message(chat_id=update.effective_chat.id, text=answer)
 
     return 'SELECTING_ACTION'
 
@@ -91,6 +106,10 @@ def main():
                 MessageHandler(
                     Filters.regex('^Случайный вопрос$'),
                     ask_random_question
+                ),
+                CallbackQueryHandler(
+                    send_answer,
+                    pattern='^' + str('ANSWER') + '$',
                 ),
             ],
         },
