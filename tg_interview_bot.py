@@ -1,12 +1,17 @@
+import random
+
 from telegram import (
     Update,
     ReplyKeyboardMarkup,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
 )
 from telegram.ext import (
     Updater,
     CallbackContext,
     CommandHandler,
     ConversationHandler,
+    CallbackQueryHandler,
     MessageHandler,
     Filters,
 )
@@ -16,7 +21,7 @@ from utils import get_random_question
 
 
 def start(update: Update, context: CallbackContext) -> str:
-    buttons = [["Python", "Django", "General "]]
+    buttons = [["Python", "Django", "General "], ["Случайный вопрос"]]
     keyboard = ReplyKeyboardMarkup(buttons, resize_keyboard=True)
     context.bot.send_message(
         chat_id=update.message.chat_id,
@@ -46,6 +51,20 @@ def ask_new_question(update: Update, context: CallbackContext):
     if selected_topic:
         question = get_random_question(topic=selected_topic)
         context.bot.send_message(chat_id=update.message.chat_id, text=question)
+def ask_random_question(update: Update, context: CallbackContext) -> str:
+    topic = ["Python", "Django", "General"]
+    selected_topic = random.choice(topic)
+    question, answer = get_random_question_and_answer(topic=selected_topic)
+    context.user_data['selected_answer'] = answer
+    buttons = [
+        [
+            InlineKeyboardButton(text="Узнать ответ", callback_data=str('ANSWER')),
+        ],
+    ]
+    keyboard = InlineKeyboardMarkup(buttons)
+    context.bot.send_message(chat_id=update.message.chat_id, text=question, reply_markup=keyboard)
+
+    return 'SELECTING_ACTION'
 
 
 def stop(update: Update, context: CallbackContext) -> int:
@@ -68,6 +87,10 @@ def main():
                 MessageHandler(
                     Filters.regex('^Python$|^Django$|^General$'),
                     select_topic
+                ),
+                MessageHandler(
+                    Filters.regex('^Случайный вопрос$'),
+                    ask_random_question
                 ),
             ],
         },
