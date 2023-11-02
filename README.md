@@ -101,6 +101,13 @@ pip install -r requirements.txt
 python tg_interview_bot.py
 ```
 
+## Источники
+
+Вопросы для этого бота были взяты из следующих источников:
+
+- [Ссылка на репозиторий с вопросами](https://github.com/yakimka/python_interview_questions)
+- [yakimka](https://github.com/yakimka)
+
 ## Деплой
 
 Тут можно проверить бота Телеграм в работе: [Telegram](https://t.me/interview_py_bot)
