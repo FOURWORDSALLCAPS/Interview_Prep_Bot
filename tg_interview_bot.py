@@ -18,11 +18,13 @@ from telegram.ext import (
 )
 from environs import Env
 from textwrap import dedent
-from utils import get_random_question_and_answer
+from utils import get_next_question_and_answer, get_random_question_and_answer
 
 
 def start(update: Update, context: CallbackContext) -> str:
-    buttons = [["Python", "Django", "General "], ["Случайный вопрос"], ["HR", "Employers", "Coding"]]
+    context.user_data['current_question_index'] = 0
+    context.user_data['selected_topic'] = None
+    buttons = [["Python", "Django", "General"], ["Случайный вопрос"], ["HR", "Employers", "Coding"]]
     keyboard = ReplyKeyboardMarkup(buttons, resize_keyboard=True)
     context.bot.send_message(
         chat_id=update.message.chat_id,
@@ -40,25 +42,35 @@ def start(update: Update, context: CallbackContext) -> str:
 
 def select_topic(update: Update, context: CallbackContext) -> str:
     selected_topic = update.message.text
-    context.user_data['selected_topic'] = selected_topic
+    previous_topic = context.user_data.get('selected_topic')
 
-    ask_new_question(update, context)
+    if selected_topic != previous_topic:
+        context.user_data['selected_topic'] = selected_topic
+        context.user_data['current_question_index'] = 0
+
+    return ask_new_question(update, context)
+
+
+def ask_new_question(update: Update, context: CallbackContext) -> str:
+    selected_topic = context.user_data.get('selected_topic')
+    if selected_topic:
+        question_and_answer = get_next_question_and_answer(selected_topic, context)
+        if question_and_answer:
+            question, answer, example = question_and_answer
+            buttons = [
+                [InlineKeyboardButton(text="Узнать ответ", callback_data="ANSWER")],
+            ]
+            keyboard = InlineKeyboardMarkup(buttons)
+            context.user_data['selected_answer'] = answer
+            context.user_data['selected_example'] = example
+            context.bot.send_message(chat_id=update.message.chat_id, text=question, reply_markup=keyboard)
+        else:
+            context.bot.send_message(
+                chat_id=update.message.chat_id,
+                text="Вопросы по этой теме закончились."
+            )
 
     return 'SELECTING_ACTION'
-
-
-def ask_new_question(update: Update, context: CallbackContext) -> None:
-    selected_topic = context.user_data.get('selected_topic')
-    buttons = [
-        [
-            InlineKeyboardButton(text="Узнать ответ", callback_data=str('ANSWER')),
-        ],
-    ]
-    question, answer, example = get_random_question_and_answer(topic=selected_topic)
-    context.user_data['selected_answer'] = answer
-    context.user_data['selected_example'] = example
-    keyboard = InlineKeyboardMarkup(buttons)
-    context.bot.send_message(chat_id=update.message.chat_id, text=question, reply_markup=keyboard)
 
 
 def ask_random_question(update: Update, context: CallbackContext) -> str:
@@ -88,10 +100,16 @@ def send_answer(update: Update, context: CallbackContext) -> str:
     return 'SELECTING_ACTION'
 
 
-def stop(update: Update, context: CallbackContext) -> int:
-    update.message.reply_text('До встречи')
+def answering_machine(update: Update, context: CallbackContext) -> str:
+    context.bot.send_message(chat_id=update.effective_chat.id, text="Не совсем понял вас!")
 
-    return -1
+    return 'SELECTING_ACTION'
+
+
+def stop(update: Update, context: CallbackContext) -> int:
+    update.message.reply_text("До свидания! Если вы хотите начать снова, используйте /start.")
+
+    return ConversationHandler.END
 
 
 def main():
@@ -105,18 +123,10 @@ def main():
         entry_points=[CommandHandler('start', start)],
         states={
             'SELECTING_ACTION': [
-                MessageHandler(
-                    Filters.regex('^Python$|^Django$|^General$|^HR$|^Employers$|^Coding$'),
-                    select_topic
-                ),
-                MessageHandler(
-                    Filters.regex('^Случайный вопрос$'),
-                    ask_random_question
-                ),
-                CallbackQueryHandler(
-                    send_answer,
-                    pattern='^' + str('ANSWER') + '$',
-                ),
+                MessageHandler(Filters.regex('^Python$|^Django$|^General$|^HR$|^Employers$|^Coding$'), select_topic),
+                MessageHandler(Filters.regex('^Случайный вопрос$'), ask_random_question),
+                MessageHandler(Filters.text & ~Filters.command, answering_machine),
+                CallbackQueryHandler(send_answer, pattern='^ANSWER$'),
             ],
         },
         fallbacks=[CommandHandler('stop', stop)],
