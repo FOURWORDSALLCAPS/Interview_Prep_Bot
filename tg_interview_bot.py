@@ -22,7 +22,7 @@ from utils import get_random_question_and_answer
 
 
 def start(update: Update, context: CallbackContext) -> str:
-    buttons = [["Python", "Django", "General "], ["Случайный вопрос"]]
+    buttons = [["Python", "Django", "General "], ["Случайный вопрос"], ["HR", "Employers", "Coding"]]
     keyboard = ReplyKeyboardMarkup(buttons, resize_keyboard=True)
     context.bot.send_message(
         chat_id=update.message.chat_id,
@@ -106,7 +106,7 @@ def main():
         states={
             'SELECTING_ACTION': [
                 MessageHandler(
-                    Filters.regex('^Python$|^Django$|^General$'),
+                    Filters.regex('^Python$|^Django$|^General$|^HR$|^Employers$|^Coding$'),
                     select_topic
                 ),
                 MessageHandler(
