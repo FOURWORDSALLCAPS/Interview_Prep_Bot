@@ -9,7 +9,7 @@ def get_random_question_and_answer(topic):
     if topic in file_content:
         topic_questions = file_content[topic]
         random_question = random.choice(topic_questions)
-        return random_question["text"], random_question["answer"], random_question["example"]
+        return random_question['text'], random_question['answer'], random_question['example']
     else:
         return None
 
@@ -24,8 +24,8 @@ def get_next_question_and_answer(topic, context):
         if current_question_index < len(topic_questions):
             context.user_data['current_question_index'] = current_question_index + 1
             return (
-                topic_questions[current_question_index]["text"],
-                topic_questions[current_question_index]["answer"],
-                topic_questions[current_question_index]["example"]
+                topic_questions[current_question_index]['text'],
+                topic_questions[current_question_index]['answer'],
+                topic_questions[current_question_index]['example']
             )
     return None
