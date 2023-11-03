@@ -104,7 +104,7 @@ def answering_machine(update: Update, context: CallbackContext) -> str:
     return 'SELECTING_ACTION'
 
 
-def stop(update: Update) -> int:
+def stop(update: Update, context: CallbackContext) -> int:
     update.message.reply_text('До свидания! Если вы хотите начать снова, используйте /start.')
 
     return ConversationHandler.END

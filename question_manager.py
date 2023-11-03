@@ -3,7 +3,7 @@ import random
 
 
 def get_random_question_and_answer(topic):
-    with open('questions/questions.json', 'r', encoding='utf-8') as file:
+    with open('questions.json', 'r', encoding='utf-8') as file:
         file_content = json.load(file)
 
     if topic in file_content:
@@ -15,7 +15,7 @@ def get_random_question_and_answer(topic):
 
 
 def get_next_question_and_answer(topic, context):
-    with open('questions/questions.json', 'r', encoding='utf-8') as file:
+    with open('questions.json', 'r', encoding='utf-8') as file:
         file_content = json.load(file)
 
     if topic in file_content:
