@@ -52,15 +52,18 @@ def ask_new_question(update: Update, context: CallbackContext) -> str:
         if question_and_answer:
             question, answer, example = question_and_answer
             buttons = [
-                [InlineKeyboardButton(text='Узнать ответ', callback_data='ANSWER')],
+                [
+                    InlineKeyboardButton(text='Узнать ответ', callback_data='ANSWER'),
+                    InlineKeyboardButton(text='Следующий вопрос', callback_data='QUESTION')
+                ],
             ]
             keyboard = InlineKeyboardMarkup(buttons)
             context.user_data['selected_answer'] = answer
             context.user_data['selected_example'] = example
-            context.bot.send_message(chat_id=update.message.chat_id, text=question, reply_markup=keyboard)
+            context.bot.send_message(chat_id=update.effective_chat.id, text=question, reply_markup=keyboard)
         else:
             context.bot.send_message(
-                chat_id=update.message.chat_id,
+                chat_id=update.effective_chat.id,
                 text='Вопросы по этой теме закончились.'
             )
 

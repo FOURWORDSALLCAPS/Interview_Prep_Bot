@@ -6,7 +6,7 @@ from telegram.ext import (
     MessageHandler,
     Filters,
 )
-from commands import answering_machine, ask_random_question, send_answer, select_topic, stop, start
+from commands import answering_machine, ask_random_question, ask_new_question, send_answer, select_topic, stop, start
 from environs import Env
 
 
@@ -25,6 +25,7 @@ def main():
                 MessageHandler(Filters.regex('^Случайный вопрос$'), ask_random_question),
                 MessageHandler(Filters.text & ~Filters.command, answering_machine),
                 CallbackQueryHandler(send_answer, pattern='^ANSWER$'),
+                CallbackQueryHandler(ask_new_question, pattern='^QUESTION$'),
             ],
         },
         fallbacks=[CommandHandler('stop', stop)],
